@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --color-green: #1f3d2b;
+  --color-beige: #f5f2eb;
+  --color-gold: #c6a969;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 18% 10%, #f9f5ef, #f0ece3 35%, #ece8df 100%);
+  color: var(--color-green);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(198, 169, 105, 0.35);
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(245, 242, 235, 0.16);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(245, 242, 235, 0.35);
+  }
+
+  .soft-ring {
+    box-shadow: 0 8px 30px rgba(31, 61, 43, 0.22);
+  }
+}
