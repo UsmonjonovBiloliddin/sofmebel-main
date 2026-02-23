@@ -78,14 +78,22 @@ export function Navbar() {
     window.scrollTo({ top: topPos, behavior: "smooth" });
   };
 
-  const getIsActive = (item: typeof navItems[0]) => {
-    const sectionId = item.href.startsWith("/#") ? item.href.replace("/#", "") : "";
-    return (
-      (item.href === "/" && pathname === "/" && scrollY < windowHeight / 3) ||
-      (sectionId && activeSection === sectionId) ||
-      pathname === item.href
-    );
-  };
+const getIsActive = (item: typeof navItems[0]) => {
+  const sectionId = item.href.startsWith("/#") ? item.href.replace("/#", "") : "";
+
+  // Home link active bo‘lsin faqat "home" section yuqorida bo‘lsa
+  if (item.href === "/" && pathname === "/") {
+    const homeSection = document.getElementById("home");
+    if (!homeSection) return false;
+    const rect = homeSection.getBoundingClientRect();
+    return rect.top <= navbarHeight && rect.bottom > navbarHeight;
+  }
+
+  return (
+    (sectionId && activeSection === sectionId) ||
+    pathname === item.href
+  );
+};
 
   return (
     <header
