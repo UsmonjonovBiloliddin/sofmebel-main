@@ -16,14 +16,24 @@ const navItems = [
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
   const [scrollY, setScrollY] = useState(0);
+  const [activeSection, setActiveSection] = useState("");
   const [darkMode, setDarkMode] = useState(true);
+  const [windowHeight, setWindowHeight] = useState(0);
 
-  const navbarHeight = 96; // Navbar balandligini moslab o‘zgartiring
+  const navbarHeight = 96; // Navbar balandligi
+
+  // Client-only windowHeight
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setWindowHeight(window.innerHeight);
+    }
+  }, []);
 
   // Scroll bilan fon va active section
   useEffect(() => {
+    if (typeof window === "undefined") return; // SSRda ishlamasin
+
     const onScroll = () => setScrollY(window.scrollY);
 
     const sections = document.querySelectorAll("section[id]");
@@ -57,6 +67,7 @@ export function Navbar() {
 
   // Smooth scroll sectionga
   const scrollToSection = (id: string) => {
+    if (typeof window === "undefined") return; // SSRda ishlamasin
     if (id === "") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -65,6 +76,15 @@ export function Navbar() {
     if (!el) return;
     const topPos = el.offsetTop - navbarHeight + 1; // +1 kichik offset
     window.scrollTo({ top: topPos, behavior: "smooth" });
+  };
+
+  const getIsActive = (item: typeof navItems[0]) => {
+    const sectionId = item.href.startsWith("/#") ? item.href.replace("/#", "") : "";
+    return (
+      (item.href === "/" && pathname === "/" && scrollY < windowHeight / 3) ||
+      (sectionId && activeSection === sectionId) ||
+      pathname === item.href
+    );
   };
 
   return (
@@ -94,35 +114,24 @@ export function Navbar() {
           {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-6">
             <nav className="flex items-center gap-10">
-              {navItems.map((item) => {
-                const sectionId = item.href.startsWith("/#")
-                  ? item.href.replace("/#", "")
-                  : "";
-
-                const isActive =
-                  (item.href === "/" && pathname === "/" && scrollY < window.innerHeight / 3) ||
-                  (sectionId && activeSection === sectionId) ||
-                  pathname === item.href;
-
-                return (
-                  <button
-                    key={item.label}
-                    onClick={() => scrollToSection(sectionId)}
-                    className={`relative text-sm transition-colors duration-300 font-medium ${
-                      isActive
-                        ? "text-[#FFD700]"
-                        : "text-gray-800 dark:text-gray-300 hover:text-[#FFD700] dark:hover:text-[#FFD700]"
+              {navItems.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => scrollToSection(item.href.startsWith("/#") ? item.href.replace("/#", "") : "")}
+                  className={`relative text-sm transition-colors duration-300 font-medium ${
+                    getIsActive(item)
+                      ? "text-[#FFD700]"
+                      : "text-gray-800 dark:text-gray-300 hover:text-[#FFD700] dark:hover:text-[#FFD700]"
+                  }`}
+                >
+                  {item.label}
+                  <span
+                    className={`absolute left-0 -bottom-1 h-[2px] bg-[#b89b5e] rounded-full transition-all duration-300 ${
+                      getIsActive(item) ? "w-6 opacity-100" : "w-0 opacity-0"
                     }`}
-                  >
-                    {item.label}
-                    <span
-                      className={`absolute left-0 -bottom-1 h-[2px] bg-[#b89b5e] rounded-full transition-all duration-300 ${
-                        isActive ? "w-6 opacity-100" : "w-0 opacity-0"
-                      }`}
-                    />
-                  </button>
-                );
-              })}
+                  />
+                </button>
+              ))}
             </nav>
 
             {/* Dark Mode Toggle Desktop */}
@@ -130,11 +139,7 @@ export function Navbar() {
               onClick={toggleTheme}
               className="cursor-pointer p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-300 flex items-center justify-center shadow-sm"
             >
-              {darkMode ? (
-                <Sun className="text-yellow-400" size={20} />
-              ) : (
-                <Moon className="text-gray-600 dark:text-gray-300" size={20} />
-              )}
+              {darkMode ? <Sun className="text-yellow-400" size={20} /> : <Moon className="text-gray-600 dark:text-gray-300" size={20} />}
             </button>
           </div>
 
@@ -151,33 +156,22 @@ export function Navbar() {
       {/* MOBILE MENU */}
       {mobileOpen && (
         <nav className="md:hidden bg-gray-50 dark:bg-gray-900 px-6 py-8 space-y-6">
-          {navItems.map((item) => {
-            const sectionId = item.href.startsWith("/#")
-              ? item.href.replace("/#", "")
-              : "";
-
-            const isActive =
-              (item.href === "/" && pathname === "/" && scrollY < window.innerHeight / 3) ||
-              (sectionId && activeSection === sectionId) ||
-              pathname === item.href;
-
-            return (
-              <button
-                key={item.label}
-                onClick={() => {
-                  scrollToSection(sectionId);
-                  setMobileOpen(false);
-                }}
-                className={`block w-full text-left text-lg transition-colors duration-300 font-medium ${
-                  isActive
-                    ? "text-[#FFD700]"
-                    : "text-gray-800 dark:text-gray-300 hover:text-[#FFD700] dark:hover:text-[#FFD700]"
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+          {navItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => {
+                scrollToSection(item.href.startsWith("/#") ? item.href.replace("/#", "") : "");
+                setMobileOpen(false);
+              }}
+              className={`block w-full text-left text-lg transition-colors duration-300 font-medium ${
+                getIsActive(item)
+                  ? "text-[#FFD700]"
+                  : "text-gray-800 dark:text-gray-300 hover:text-[#FFD700] dark:hover:text-[#FFD700]"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
 
           {/* Dark Mode Toggle Mobile */}
           <button
