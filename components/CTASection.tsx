@@ -1,13 +1,27 @@
+'use client';
+
+import { motion } from "framer-motion";
+
 export function CTASection() {
   return (
     <section className="mx-auto mt-20 w-full max-w-7xl px-5 pb-20 sm:px-8 lg:px-10">
-      <div className="rounded-3xl bg-[#f5f1e8] dark:bg-[#111615] p-10 sm:p-14 transition-colors duration-500">
-
+      <motion.div
+        className="rounded-3xl bg-[#fffffd] dark:bg-[#111615] p-10 sm:p-14 transition-colors duration-500"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="grid gap-10 md:grid-cols-[1.2fr_auto] md:items-center">
 
           {/* TEXT */}
-          <div>
-            <p className="text-xs uppercase tracking-[0.25em] text-goldAccent dark:text-yellow-400">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-goldAccent dark:text-yellow-400">
               Bepul maslahat
             </p>
 
@@ -20,11 +34,16 @@ export function CTASection() {
               Dizaynerimiz bilan bog‘laning va xonangiz o‘lchamiga mos,
               estetik va uzoq xizmat qiladigan mebel yechimini oling.
             </p>
-          </div>
+          </motion.div>
 
           {/* BUTTONS */}
-          <div className="flex flex-col gap-4 sm:flex-row md:flex-col">
-
+          <motion.div
+            className="flex flex-col gap-4 sm:flex-row md:flex-col"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
             <a
               href="#"
               className="inline-flex items-center justify-center rounded-2xl 
@@ -43,10 +62,10 @@ export function CTASection() {
             >
               Katalogni ko‘rish
             </a>
+          </motion.div>
 
-          </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

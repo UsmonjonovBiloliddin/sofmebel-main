@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 const collections = [
   {
@@ -23,21 +24,16 @@ const collections = [
     image:
       "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1200&auto=format&fit=crop",
   },
-
-  // 🔥 YANGI Bolalar xonasi
   {
     title: "Bolalar xonasi",
     image:
       "https://images.unsplash.com/photo-1600585152915-d208bec867a1?q=80&w=1200&auto=format&fit=crop",
   },
-
-  // 🔥 YANGI Ish xonasi
   {
     title: "Ish xonasi",
     image:
       "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?q=80&w=1200&auto=format&fit=crop",
   },
-
   {
     title: "Premium divanlar",
     image:
@@ -59,16 +55,27 @@ const collections = [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop",
   },
 ];
+
 export function CollectionsSection() {
   return (
-    <section
+    <motion.section
       id="mebel"
-      className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:mt-20  lg:px-10"
+      initial={{ opacity: 0, y: 80 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.9, ease: "easeOut" }}
+      viewport={{ once: true }}
+      className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:mt-20 lg:px-10"
     >
       <div className="relative overflow-hidden rounded-3xl bg-[#f6f2eb] dark:bg-[#0c1110] p-8 transition-colors duration-700">
         
         {/* Header */}
-        <div className="mb-10 flex items-center justify-between">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          viewport={{ once: true }}
+          className="mb-10 flex items-center justify-between"
+        >
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-goldAccent dark:text-yellow-400">
               Kolleksiyalar
@@ -78,7 +85,6 @@ export function CollectionsSection() {
             </h2>
           </div>
 
-          {/* Premium Navigation */}
           <div className="flex gap-4">
             <button className="prev-btn flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-[#d6c7a1] to-[#bfa46f] dark:from-yellow-500 dark:to-yellow-600 text-white shadow-lg hover:scale-110 transition">
               <ChevronLeft />
@@ -87,7 +93,7 @@ export function CollectionsSection() {
               <ChevronRight />
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Slider */}
         <Swiper
@@ -108,9 +114,13 @@ export function CollectionsSection() {
         >
           {collections.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="group relative h-[380px] overflow-hidden rounded-3xl shadow-xl">
-                
-                {/* Image */}
+              <motion.div
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.7 }}
+                viewport={{ once: true }}
+                className="group relative h-[380px] overflow-hidden rounded-3xl shadow-xl"
+              >
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -118,21 +128,18 @@ export function CollectionsSection() {
                   className="object-cover transition duration-700 group-hover:scale-110"
                 />
 
-                {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
-                {/* Text */}
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-xl font-semibold text-white tracking-wide">
                     {item.title}
                   </h3>
                 </div>
-
-              </div>
+              </motion.div>
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
-    </section>
+    </motion.section>
   );
 }
